@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>haider — portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'IBM Plex Mono',monospace;
+  background:#0a0a0a;
+  color:#c8c8c8;
+  font-size:14px;
+  line-height:1.6;
+  min-height:100vh;
+  padding-left:180px
+}
+a{color:inherit;text-decoration:none}
+::selection{background:#7fff7f33;color:#efefef}
+.sidebar{
+  position:fixed;
+  top:0;left:0;
+  width:180px;
+  height:100vh;
+  padding:40px 24px;
+  display:flex;
+  flex-direction:column;
+  gap:32px;
+  z-index:10
+}
+.site-id{
+  font-size:16px;
+  font-weight:600;
+  color:#efefef;
+  letter-spacing:-0.5px
+}
+.nav-links{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:4px
+}
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:4px 0;
+  color:#444444;
+  font-size:13px;
+  transition:color .15s;
+  cursor:pointer
+}
+.nav-link:hover{color:#c8c8c8}
+.nav-link.active{color:#efefef}
+.nav-dot{
+  width:6px;height:6px;
+  border-radius:0;
+  background:#444444;
+  flex-shrink:0;
+  transition:background .15s
+}
+.nav-link.active .nav-dot{background:#7fff7f}
+.main{
+  max-width:680px;
+  margin:0 auto;
+  padding:80px 48px 120px
+}
+section{margin-bottom:100px}
+section:last-child{margin-bottom:0}
+h1{
+  font-size:28px;
+  font-weight:500;
+  color:#efefef;
+  margin-bottom:12px;
+  letter-spacing:-0.5px
+}
+h2{
+  font-size:18px;
+  font-weight:500;
+  color:#efefef;
+  margin-bottom:24px;
+  letter-spacing:-0.5px
+}
+h2 .hash{color:#444444}
+p{margin-bottom:16px;max-width:580px}
+p:last-child{margin-bottom:0}
+.muted{color:#444444}
+.bright{color:#efefef}
+.accent{color:#7fff7f}
+.small{font-size:12px}
+.hero-sub{color:#444444;font-size:15px;margin-bottom:24px}
+.hero-desc{max-width:520px}
+.projects-list{display:flex;flex-direction:column;gap:20px}
+.project-item{border-left:1px solid #222222;padding-left:16px}
+.project-item h3{color:#efefef;font-size:14px;font-weight:500;margin-bottom:4px}
+.project-link{color:#444444;font-size:12px;margin-left:6px;transition:color .15s}
+.project-link:hover{color:#7fff7f}
+.project-item p{font-size:13px;color:#444444;margin-bottom:6px}
+.project-item .tags{display:flex;gap:8px;flex-wrap:wrap}
+.project-item .tags span{font-size:11px;color:#444444;border:1px solid #222222;padding:1px 6px}
+
+.contact-links{display:flex;flex-direction:column;gap:8px}
+.contact-links a{color:#444444;font-size:13px;transition:color .15s}
+.contact-links a:hover{color:#c8c8c8}
+.stack-grid{display:flex;flex-direction:column;gap:16px}
+.stack-cat{}
+.stack-cat .cat-label{color:#444444;font-size:12px;margin-bottom:4px}
+.stack-cat .cat-items{color:#c8c8c8;font-size:13px}
+/* terminal */
+.terminal{
+  margin-top:32px;
+  border:1px solid #222222;
+  background:#0d0d0d;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  overflow:hidden
+}
+.terminal-titlebar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  background:#141414;
+  border-bottom:1px solid #222222
+}
+.terminal-dots{display:flex;gap:6px}
+.terminal-dot{
+  width:10px;height:10px;
+  border-radius:50%;
+  flex-shrink:0
+}
+.terminal-dot.red{background:#ff5f56}
+.terminal-dot.yellow{background:#ffbd2e}
+.terminal-dot.green{background:#27c93f}
+.terminal-title{font-size:11px;color:#444444;margin-left:auto}
+.terminal-output{
+  padding:12px;
+  height:280px;
+  overflow-y:auto;
+  font-size:13px;
+  line-height:1.5
+}
+.terminal-output .line{padding:1px 0;white-space:pre-wrap;word-break:break-all}
+.terminal-output .line.green{color:#7fff7f}
+.terminal-output .line.bright{color:#efefef}
+.terminal-output .line.info{color:#444444}
+.terminal-output .line.error{color:#ff5f56}
+.terminal-output .line.yellow{color:#ffbd2e}
+.terminal-input-row{
+  display:flex;
+  align-items:center;
+  padding:8px 12px;
+  border-top:1px solid #222222;
+  background:#0a0a0a
+}
+.terminal-prompt{color:#7fff7f;margin-right:8px;font-size:13px;flex-shrink:0}
+.terminal-input{
+  background:transparent;
+  border:none;
+  outline:none;
+  color:#efefef;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  flex:1;
+  caret-color:#7fff7f
+}
+.terminal-input::placeholder{color:#444444}
+/* commit graph */
+.graph-container{margin-top:16px}
+.graph-container canvas{display:block;margin-bottom:8px}
+.graph-fallback{color:#444444;font-size:13px;padding:24px 0}
+.graph-loading{color:#444444;font-size:13px;padding:24px 0}
+.graph-label{font-size:11px;color:#444444}
+/* responsive */
+@media(max-width:900px){
+  body{padding-left:0}
+  .sidebar{
+    position:sticky;
+    top:0;
+    width:100%;
+    height:auto;
+    padding:20px 24px;
+    flex-direction:row;
+    align-items:center;
+    border-bottom:1px solid #222222;
+    background:rgba(10,10,10,.85);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px)
+  }
+  .nav-links{flex-direction:row;margin-left:auto}
+  .nav-link{display:none;font-size:12px}
+  .nav-link.active{display:flex}
+  .main{margin:0;padding:40px 24px}
+}
+</style>
+</head>
+<body>
+
+<nav class="sidebar" id="sidebar">
+  <div class="site-id">haider</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero" class="nav-link" data-section="hero"><span class="nav-dot"></span>hero</a></li>
+    <li><a href="#about" class="nav-link" data-section="about"><span class="nav-dot"></span>about</a></li>
+    <li><a href="#stack" class="nav-link" data-section="stack"><span class="nav-dot"></span>stack</a></li>
+    <li><a href="#projects" class="nav-link" data-section="projects"><span class="nav-dot"></span>projects</a></li>
+    <li><a href="#activity" class="nav-link" data-section="activity"><span class="nav-dot"></span>activity</a></li>
+    <li><a href="#contact" class="nav-link" data-section="contact"><span class="nav-dot"></span>contact</a></li>
+  </ul>
+</nav>
+
+<main class="main">
+
+<!-- HERO -->
+<section id="hero">
+  <h1>Haider</h1>
+  <div class="hero-sub">second-year CS undergrad @ MIT Manipal</div>
+  <p class="hero-desc">I build things that think — agents, mobile apps, and ML pipelines.</p>
+
+  <div class="terminal" id="terminal">
+    <div class="terminal-titlebar">
+      <div class="terminal-dots">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+      </div>
+      <span class="terminal-title">/bin/portfolio</span>
+    </div>
+    <div class="terminal-output" id="terminalOutput">
+      <div class="line info">Portfolio terminal v0.1 — type 'help' for commands.</div>
+    </div>
+    <div class="terminal-input-row">
+      <span class="terminal-prompt">$</span>
+      <input class="terminal-input" id="terminalInput" type="text" placeholder="type a command..." spellcheck="false" autocomplete="off" autocapitalize="off">
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2><span class="hash">#</span> about</h2>
+  <p>I've been writing code since I was 13 — starting with web, moving through game jams, then mobile, now machine learning and agent systems.</p>
+  <p>Right now I'm focused on building things that are actually useful: LLM-powered workflows, on-device Android applications, and retrieval pipelines that hold up under real constraints.</p>
+  <p>I care about software that does one thing well and doesn't hide what it is.</p>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <h2><span class="hash">#</span> stack</h2>
+  <div class="stack-grid">
+    <div class="stack-cat">
+      <div class="cat-label">Languages</div>
+      <div class="cat-items">Python · JavaScript · TypeScript · Java · C++</div>
+    </div>
+    <div class="stack-cat">
+      <div class="cat-label">ML / AI</div>
+      <div class="cat-items">scikit-learn · pandas · numpy · PyTorch · LangChain · LangGraph</div>
+    </div>
+    <div class="stack-cat">
+      <div class="cat-label">Frontend</div>
+      <div class="cat-items">HTML · React · React Native · Android</div>
+    </div>
+    <div class="stack-cat">
+      <div class="cat-label">Backend</div>
+      <div class="cat-items">FastAPI</div>
+    </div>
+    <div class="stack-cat">
+      <div class="cat-label">Other</div>
+      <div class="cat-items">Git · Linux</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <h2><span class="hash">#</span> projects</h2>
+  <div class="projects-list">
+    <div class="project-item">
+      <h3>Ghostwriter<a href="#" class="project-link" target="_blank" rel="noopener">↗</a></h3>
+      <p>Agentic writing assistant on LangGraph + Llama 3. Stateful graph for drafting and revision. FastAPI + React frontend.</p>
+      <div class="tags"><span>LangGraph</span><span>Llama 3</span><span>FastAPI</span><span>React</span></div>
+    </div>
+    <div class="project-item">
+      <h3>Local Inference Console<a href="#" class="project-link" target="_blank" rel="noopener">↗</a></h3>
+      <p>Vanilla JS chat UI for local LLMs. Streaming, live tok/s readout, fully offline. No dependencies.</p>
+      <div class="tags"><span>Vanilla JS</span><span>LLM</span><span>Streaming</span></div>
+    </div>
+    <div class="project-item">
+      <h3>Root<a href="#" class="project-link" target="_blank" rel="noopener">↗</a></h3>
+      <p>Minimalist focus timer for Android. Published on the Play Store. Built with React Native.</p>
+      <div class="tags"><span>React Native</span><span>Android</span><span>Play Store</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTIVITY -->
+<section id="activity">
+  <h2><span class="hash">#</span> activity</h2>
+  <div class="graph-container" id="graphContainer">
+    <div class="graph-loading" id="graphLoading">Fetching commit data...</div>
+    <canvas id="graphCanvas" style="display:none"></canvas>
+    <div class="graph-fallback" id="graphFallback" style="display:none"></div>
+    <div class="graph-label" id="graphLabel" style="display:none">less · · · · · more</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2><span class="hash">#</span> contact</h2>
+  <div class="contact-links">
+    <a href="mailto:syed.mohammad.haider05@gmail.com">syed.mohammad.haider05@gmail.com</a>
+    <a href="https://github.com/syedmohammadhaider" target="_blank" rel="noopener">github.com/syedmohammadhaider</a>
+    <a href="https://linkedin.com/in/syed-mohammad-haider-083407227" target="_blank" rel="noopener">linkedin.com/in/syed-mohammad-haider-083407227</a>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  // ————— TERMINAL —————
+  var termOutput = document.getElementById('terminalOutput');
+  var termInput = document.getElementById('terminalInput');
+
+  function addLine(text, cls) {
+    var line = document.createElement('div');
+    line.className = 'line ' + (cls || '');
+    line.textContent = text;
+    termOutput.appendChild(line);
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+
+  function clearOutput() {
+    termOutput.innerHTML = '';
+  }
+
+  var commands = {
+    help: function() {
+      return [
+        ['Available commands:', 'bright'],
+        ['  help         Show this message', 'info'],
+        ['  ls           List sections', 'info'],
+        ['  goto [section]  Scroll to a section', 'info'],
+        ['  top          Scroll to top', 'info'],
+        ['  about        Display about info', 'info'],
+        ['  stack        Display tech stack', 'info'],
+        ['  contact      Display contact info', 'info'],
+        ['  clear        Clear the terminal', 'info'],
+        ['  exit         Try to leave', 'info'],
+        ['  source       About this page', 'info'],
+      ];
+    },
+    ls: function() {
+      return [
+        ['Sections:', 'bright'],
+        ['  hero  about  stack  projects  activity  contact', 'info'],
+      ];
+    },
+    goto: function(args) {
+      var valid = ['hero','about','stack','projects','activity','contact'];
+      if (args.length === 0) {
+        return [['Usage: goto [section] — sections: hero, about, stack, projects, activity, contact', 'error']];
+      }
+      var sec = args[0];
+      if (valid.indexOf(sec) !== -1) {
+        var el = document.getElementById(sec);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        return [['→ Scrolling to ' + sec + '...', 'green']];
+      }
+      return [['Error: unknown section "' + sec + '"', 'error']];
+    },
+    top: function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return [['→ Scrolling to top...', 'green']];
+    },
+    about: function() {
+      return [
+        ['Haider — software engineer', 'bright'],
+        ['Building things on the web. Terminal enthusiast.', 'info'],
+        ['This terminal is always available — try the commands.', 'info'],
+      ];
+    },
+    stack: function() {
+      return [
+        ['Languages:   JavaScript, TypeScript, Python, Go, Rust', 'info'],
+        ['Frontend:    React, Vue, Svelte, Tailwind', 'info'],
+        ['Backend:     Node.js, Express, FastAPI, Postgres', 'info'],
+        ['Infra:       Docker, Linux, Nginx', 'info'],
+        ['Tools:       Git, Neovim, Tmux', 'info'],
+      ];
+    },
+    contact: function() {
+      return [
+        ['Email:   haider@example.com', 'info'],
+        ['GitHub:  github.com/haider', 'info'],
+        ['X:       x.com/haider', 'info'],
+      ];
+    },
+    clear: function() {
+      return [];
+    },
+    exit: function() {
+      return [
+        ['Nice try. This is a static site — nowhere to go.', 'yellow'],
+        ["Type 'help' if you're lost.", 'info'],
+      ];
+    },
+    source: function() {
+      return [
+        ['This page is a single HTML file.', 'bright'],
+        ['  Framework:   None (vanilla JS)', 'info'],
+        ['  Font:        IBM Plex Mono (Google Fonts)', 'info'],
+        ['  Dependencies:Zero', 'info'],
+        ['  Lines:       ~350', 'info'],
+        ['  Philosophy:  Brutalist minimalism', 'info'],
+      ];
+    },
+  };
+
+  function processCommand(raw) {
+    var trimmed = raw.trim();
+    var parts = trimmed.split(/\s+/);
+    var cmd = parts[0] ? parts[0].toLowerCase() : '';
+    var args = parts.slice(1);
+
+    if (trimmed !== '') {
+      addLine('$ ' + trimmed, 'green');
+    }
+
+    if (cmd === '') return;
+    if (cmd === 'clear') { clearOutput(); return; }
+
+    var fn = commands[cmd];
+    if (fn) {
+      var lines = fn(args);
+      for (var i = 0; i < lines.length; i++) {
+        addLine(lines[i][0], lines[i][1]);
+      }
+    } else {
+      addLine("Error: unknown command '" + cmd + "'. Type 'help'.", 'error');
+    }
+  }
+
+  termInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      processCommand(termInput.value);
+      termInput.value = '';
+    }
+  });
+
+  // ————— KEYBOARD SHORTCUTS —————
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '`' || e.key === '~') {
+      e.preventDefault();
+      termInput.focus();
+    }
+    if (e.key === 'Escape' && document.activeElement === termInput) {
+      termInput.blur();
+    }
+  });
+
+  // ————— SCROLL SPY —————
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.nav-link');
+
+  var observer = new IntersectionObserver(function(entries) {
+    var active = '';
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        active = entry.target.id;
+      }
+    });
+    navLinks.forEach(function(link) {
+      if (link.dataset.section === active) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(function(s) { observer.observe(s); });
+
+  // Initially activate first nav link
+  if (navLinks.length > 0) navLinks[0].classList.add('active');
+
+  // ————— COMMIT GRAPH —————
+  var GITHUB_USER = 'syedmohammadhaider';
+  var canvas = document.getElementById('graphCanvas');
+  var ctx = canvas.getContext('2d');
+  var loading = document.getElementById('graphLoading');
+  var fallback = document.getElementById('graphFallback');
+  var label = document.getElementById('graphLabel');
+
+  function dateRange() {
+    var now = new Date();
+    var end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    var start = new Date(end);
+    start.setUTCDate(start.getUTCDate() - 89);
+    start.setUTCDate(start.getUTCDate() - start.getUTCDay());
+    var totalDays = Math.ceil((end - start) / 86400000);
+    var weeks = Math.ceil(totalDays / 7);
+    return { start: start, end: end, totalDays: totalDays, weeks: weeks };
+  }
+
+  function sampleData(r) {
+    var data = {};
+    for (var d = 0; d < r.totalDays; d++) {
+      var date = new Date(r.start);
+      date.setUTCDate(date.getUTCDate() + d);
+      if (date > r.end) break;
+      var key = date.toISOString().slice(0, 10);
+      var dow = date.getUTCDay();
+      var seed = d * 1103515245 + 12345;
+      var rand = ((seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+      var n;
+      if (dow === 0 || dow === 6) {
+        if (rand < 0.5) n = 0;
+        else if (rand < 0.75) n = 1;
+        else n = 2;
+      } else {
+        n = Math.floor(rand * 7);
+      }
+      if (n > 0) data[key] = n;
+    }
+    return data;
+  }
+
+  function renderGraph(data, labelText) {
+    var r = dateRange();
+    var cs = 12, gap = 2, step = cs + gap;
+    var tp = 16, lp = 28;
+    var w = r.weeks * step + lp + 4;
+    var h = 7 * step + tp + 4;
+
+    canvas.width = w * 2;
+    canvas.height = h * 2;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.style.display = 'block';
+    ctx.scale(2, 2);
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, w, h);
+
+    var maxC = 0;
+    for (var k in data) { if (data[k] > maxC) maxC = data[k]; }
+    if (maxC === 0) maxC = 1;
+
+    var colors = ['#222222','#0a3a0a','#0a5a0a','#1a7a1a','#3aba3a','#7fff7f'];
+    function col(c) {
+      if (c === 0) return colors[0];
+      var t = c / maxC;
+      if (t <= 0.2) return colors[1];
+      if (t <= 0.4) return colors[2];
+      if (t <= 0.6) return colors[3];
+      if (t <= 0.8) return colors[4];
+      return colors[5];
+    }
+
+    for (var d = 0; d < r.totalDays; d++) {
+      var date = new Date(r.start);
+      date.setUTCDate(date.getUTCDate() + d);
+      if (date > r.end) break;
+      var week = Math.floor(d / 7);
+      var dow = date.getUTCDay();
+      var key = date.toISOString().slice(0, 10);
+      var x = lp + week * step;
+      var y = tp + dow * step;
+      ctx.fillStyle = col(data[key] || 0);
+      ctx.fillRect(x, y, cs, cs);
+    }
+
+    ctx.fillStyle = '#444444';
+    ctx.font = '10px IBM Plex Mono';
+    var months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+    var seen = {};
+    for (var d = 0; d < r.totalDays; d++) {
+      var date = new Date(r.start);
+      date.setUTCDate(date.getUTCDate() + d);
+      if (date > r.end) break;
+      var week = Math.floor(d / 7);
+      var m = date.getUTCMonth();
+      var y = date.getUTCFullYear();
+      var s = y + '-' + m;
+      if (!seen[s]) { seen[s] = true; ctx.fillText(months[m], lp + week * step, 11); }
+    }
+
+    var dayLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+    for (var i = 0; i < 7; i++) {
+      if (dayLabels[i]) ctx.fillText(dayLabels[i], 0, tp + i * step + 10);
+    }
+
+    label.textContent = labelText;
+    label.style.display = 'block';
+    loading.style.display = 'none';
+  }
+
+  (function fetchCommits() {
+    var r = dateRange();
+    var since = r.start.toISOString();
+    var allData = {};
+    var active = 0;
+
+    function done() {
+      var hasData = false;
+      for (var k in allData) { if (allData[k] > 0) { hasData = true; break; } }
+      renderGraph(hasData ? allData : sampleData(r),
+        hasData ? 'Last 90 days — GitHub data' : 'Sample activity (no commits in range)');
+    }
+
+    function fetchRepo(fullName) {
+      active++;
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://api.github.com/repos/' + fullName + '/commits?author=' + GITHUB_USER + '&since=' + since + '&per_page=100', true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 200) {
+          try {
+            var commits = JSON.parse(xhr.responseText);
+            for (var i = 0; i < commits.length; i++) {
+              var c = commits[i];
+              if (!c.commit || !c.commit.author || !c.commit.author.date) continue;
+              var d = c.commit.author.date.slice(0, 10);
+              allData[d] = (allData[d] || 0) + 1;
+            }
+          } catch(e) {}
+        }
+        active--;
+        if (active === 0) done();
+      };
+      xhr.onerror = function() { active--; if (active === 0) done(); };
+      xhr.send();
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://api.github.com/users/' + GITHUB_USER + '/repos?per_page=100&type=owner', true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+      if (xhr.status === 200) {
+        try {
+          var repos = JSON.parse(xhr.responseText);
+          var own = [];
+          for (var i = 0; i < repos.length; i++) {
+            if (!repos[i].fork && !repos[i].archived) own.push(repos[i].full_name);
+          }
+          if (own.length === 0) { done(); return; }
+          for (var i = 0; i < own.length; i++) fetchRepo(own[i]);
+        } catch(e) { done(); }
+      } else {
+        renderGraph(sampleData(r), 'Sample activity (API ' + xhr.status + ')');
+      }
+    };
+    xhr.onerror = function() { renderGraph(sampleData(dateRange()), 'Sample activity (network error)'); };
+    xhr.send();
+  })();
+
+})();
+</script>
+</body>
+</html>
